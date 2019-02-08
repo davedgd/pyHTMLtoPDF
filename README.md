@@ -1,2 +1,2 @@
-# htmltopdf
-Python-based HTML to PDF conversion with complete color support using pyppeteer Chrome headless renderer
+# pyhtmltopdf
+Python-based HTML to PDF conversion with full color support via Chrome headless rendering
