@@ -1,14 +1,14 @@
 # Notes:
-# pip install pyppeteer
+# pip install pyppeteer pyunpack patool
 
 # Usage:
-# pyhtmltopdf.py 'path/to/folder' --unzip
+# pyhtmltopdf.py 'path/to/folder' --extract
 
 import os
 import sys
 from subprocess import call
 import pathlib
-import zipfile
+from pyunpack import Archive
 
 import asyncio
 from pyppeteer import launch
@@ -17,22 +17,27 @@ async def printpdf(fullFilePath, fullOutputPath):
     browser = await launch()
     page = await browser.newPage()
     await page.goto(fullFilePath)
-    #await page.screenshot({'path': 'example.png'})
     await page.emulateMedia('screen')
-    await page.pdf({'path': fullOutputPath, 'format': 'A4', 'printBackground': 'true', 'margin': {'top': '0cm', 'left': '1cm', 'right': '1cm', 'bottom': '0cm'}})
+    await page.pdf({
+        'path': fullOutputPath, 
+        'format': 'A4', 
+        'printBackground': 'true', 
+        'margin': {
+            'top': '0cm', 
+            'left': '1cm', 
+            'right': '1cm', 
+            'bottom': '0cm'}})
     await browser.close()
 
-if ("--unzip" in sys.argv):
+if ("--extract" in sys.argv):
 
-    print("Unzipping as requested...")
+    print("Extracting as requested...")
 
     for root, dirs, files in os.walk(sys.argv[1]):
         for file in files:
-            if file.endswith(".zip"):
-                theZipFile = os.path.join(root, file)
-                theZipFile = zipfile.ZipFile(theZipFile, "r")
-                theZipFile.extractall(root)
-                theZipFile.close()
+            if file.endswith(".zip") or file.endswith(".rar"):
+                theArchive = os.path.join(root, file)
+                Archive(theArchive).extractall(root)
 
 print("Processing PDFs...")
 
