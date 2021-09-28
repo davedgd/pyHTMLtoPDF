@@ -17,6 +17,7 @@ async def printpdf(fullFilePath, fullOutputPath):
     browser = await launch()
     page = await browser.newPage()
     await page.goto(fullFilePath)
+    await page.waitFor(1000) # avoid loading messages
     await page.emulateMedia('screen')
     await page.pdf({
         'path': fullOutputPath, 
